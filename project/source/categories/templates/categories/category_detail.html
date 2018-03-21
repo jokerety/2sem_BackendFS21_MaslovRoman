@@ -1,0 +1,16 @@
+{% extends "categories/base_categories.html" %}
+
+
+{%  block content %}
+    <a href="{% url "categories:categories_list" %}">All categories</a>
+    <br>
+   {{ category.name }}
+
+    <div>
+        {% for task in tasks %}
+            <div> <a href="{% url "task:task_detail" pk=task.id %}">{{ task }}</a> <i> {{ task.created|date:"Y-m-d" }}</i></div>
+
+        {% endfor %}
+
+    </div>
+{% endblock %}

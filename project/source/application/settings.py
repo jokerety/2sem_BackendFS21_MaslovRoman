@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rating.apps.RatingConfig',
     'task.apps.TaskConfig',
     'userman.apps.UsermanConfig',
+    'categories.apps.CategoriesConfig'
 
 ]
 

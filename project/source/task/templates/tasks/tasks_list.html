@@ -1,0 +1,11 @@
+
+{% extends "core/base.html" %}
+
+
+{% block content %}
+    {% for task in tasks %}
+        <a href="{% url "task:task_detail" pk=task.id %} ">{{ task.name }}</a>
+        <br>
+    {% endfor %}
+    {{  username }}
+{%  endblock %}
