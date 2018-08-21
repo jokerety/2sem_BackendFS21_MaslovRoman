@@ -1,13 +1,126 @@
 {% extends "core/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}  Задание - {{ task.super }} {% endblock %}
 
 
 {%  block content %}
-    <a href="{% url "categories:categories_list"  %}">Back</a>
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <p class="card card-block bg-faded"><a href="{% url 'categories:categories_list'%}">Назад</a></p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <h3>Задание "{{task.name}}"</h3>
+        </div>
+        <div class="col">
+            <div class="autoload" data-url="{% url "task:likes" pk=task.id %}">
+
+            </div>
+            <form action="{% url "task:add_like" pk=task.id%}" method="post" class="addlike float-right">
+               {% crispy like_form %}
+            </form>
+        </div>
+    </div>
+
+
+      <div class="row my-2">
+        <div class="col-md-12">
+            <div class="card mt-1">
+                <div class="card-body">
+                    <p>{{ task.prescription }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <h3>В категориях</h3>
+    <div class="row my-2">
+        <div class="col-md-12">
+            <div class="card mt-1">
+                <div class="card-body">
+                {% for category in task.categories.all %}
+                    {% if not forloop.first %},{%endif%}
+                    <a href="{% url "categories:category_detail" pk=category.id %}">{{ category.name }}</a>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Комментарии</h3>
+
+    <div class="row my-2">
+        <div class="col-md-12">
+            <div class="autoload" data-url="{% url "task:comments" pk=task.id %}">
+            </div>
+        </div>
+    </div>
+
+     <h3>Ваш комментарий</h3>
+     <form  method = "post">
+        {% crispy comment_form %}
+     </form>
 
     <div>
-         {{ task.name }}
-        <br>
-        {{ task.prescription }}
+
+        <div class="col-md-12">
+                <div class ="card card-block bg-faded mt-2">
+                    <p class = "p-1"> Задание взяли:
+                    {% for user in task.usertask.all %}
+                          {{ user.username }}
+                    {% endfor %}
+                    </p>
+                </div>
+            </div>
+        <div class ="row">
+
+            {% if task.is_finished %}
+                <h2 class="col"> Задание завершено, всем спасибо!</h2>
+
+            {% elif not task.is_finished %}
+                <form action="" method = "post" class="col">
+                {% crispy take_form %}
+                </form>
+
+             {% if user.is_superuser %}
+                <form action="" method = "post" class="col">
+                {% crispy close_form %}
+                </form>
+             {% endif %}
+
+        {% endif %}
+        </div>
 
     </div>
+
+
+
+    <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ответочка</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  <form class="add_comment_form" action="" method="post">
+
+                  </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
 {% endblock %}
+
+

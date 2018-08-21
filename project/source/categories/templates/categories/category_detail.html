@@ -1,16 +1,62 @@
 {% extends "categories/base_categories.html" %}
-
+{% load cache %}
+{% load crispy_forms_tags %}
 
 {%  block content %}
-    <a href="{% url "categories:categories_list" %}">All categories</a>
+   <a href="{% url "categories:categories_list" %}">Назад</a>
     <br>
-   {{ category.name }}
+   <h3>Категория: {{ category.name }} (Всего:  {% cache 3 "stats" task.id %} {{ tasks.get_stats.tasks_count }} {% endcache %} заданий)</h3>
 
-    <div>
+    <div class="row mb-2">
+        <div class="col-8">
+                <form action="" method = "get">
+                    <div class="form-row">
+                         <div class="col">
+                            {{ form.sort }}
+                        </div>
+                        <div class="col">
+                            {{ form.search }}
+                        </div>
+                        <div class="col">
+                            <input class="btn btn-secondary" type="submit" value="Поиск">
+                        </div>
+                    </div>
+                </form>
+        </div>
+    </div>
+
+
+    <div class ="row">
         {% for task in tasks %}
-            <div> <a href="{% url "task:task_detail" pk=task.id %}">{{ task }}</a> <i> {{ task.created|date:"Y-m-d" }}</i></div>
+            <div class="col-md-12">
+                <div class ="card card-block bg-faded mt-2">
+                    <p class = "p-1"><a class="card-link" href="{% url "task:task_detail" pk=task.id %}">{{ task }}</a></p>
+                    <p class = "p-1">{{ task.prescription }}</p>
 
+                    {% if task.auth_id == user.id %}
+                    <p class = "p-1"><a class="float-right" href = "{%  url "task:task_edit" pk=task.id %}">Редактировать</a></p>
+                    {% endif %}
+                    <p class = "p-1"><i class="float-right"> {{ task.created|date:"Y-m-d" }}</i></p>
+                    <p class = "p-1 float-left" >
+                        Создал: {{ task.auth.username }}
+                    </p>
+                    <p class = "p-1 float-left">
+                        Задание в категориях:
+                        {% for category in task.categories.all %}
+                             <a href="{% url "categories:category_detail" pk=category.id %}">{{ category.name }};</a>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        Лайкнули {{ task.likes_count }}  Количество просмотров:  {% cache 6 "viewcount" task.id %}{{ task.viewcount }} {% endcache %}
+                    </p>
+
+                </div>
+            </div>
         {% endfor %}
 
     </div>
+    <br>
+    <br>
+    <a href="{% url "task:task_create" %}">Создать новое задание</a>
 {% endblock %}
+

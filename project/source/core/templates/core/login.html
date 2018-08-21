@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %}
+{% block title %} Вход на сайт {% endblock %}
+
+
+{% block content %}
+    <h3>Вход на сайт</h3>
+    <form class="" action="" method="post">
+        {% csrf_token %}
+        {% crispy form %}
+    </form>
+{%  endblock %}

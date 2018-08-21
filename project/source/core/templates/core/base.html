@@ -1,10 +1,94 @@
-<h1>MyTaskSolver v1</h1>
+
+{% load static %}
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="icon" href="{% static "bootstrap-4.1.1/favicon.ico" %}">
+
+    <title> {% block title %}TaskSolver{% endblock %} </title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static "bootstrap-4.1.1/dist/css/bootstrap.min.css" %}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    {% block CUSTOME_STYLES %}{% endblock %}
+    <link href="{% static "bootstrap-4.1.1/docs/4.1/examples/album/album.css" %}" rel="stylesheet">
+    <link href="{% static "chosen/bootstrap-chosen.css" %}" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <header>
+      <div class="collapse bg-dark" id="navbarHeader">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-8 col-md-7 py-4">
+              <h4 class="text-white">О проекте</h4>
+              <p class="text-muted">Распределяй задачи между работниками эффективно, делай мероприятия более организованными! </p>
+            </div>
+            <div class="col-sm-4 offset-md-1 py-4">
+                {% if user.is_authenticated  %}
+                    <li class="nav-item">
+                        <h4 class="text-white">Hello {{ user.username }} ! </h4>
+                        <a class="nav-link" href="{% url "core:logout" %}">Выйти</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url "core:login" %}">Войти</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url "core:register" %}">Зарегестрироваться</a>
+                    </li>
+                {% endif %}
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="navbar navbar-dark bg-dark box-shadow">
+        <div class="container d-flex justify-content-between">
+          <a href="#" class="navbar-brand d-flex align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="d-block mx-auto"><circle cx="12" cy="12" r="10"></circle><line x1="14.31" y1="8" x2="20.05" y2="17.94"></line><line x1="9.69" y1="8" x2="21.17" y2="8"></line><line x1="7.38" y1="12" x2="13.12" y2="2.06"></line><line x1="9.69" y1="16" x2="3.95" y2="6.06"></line><line x1="14.31" y1="16" x2="2.83" y2="16"></line><line x1="16.62" y1="12" x2="10.88" y2="21.94"></line></svg>
+            <strong>TaskSolver</strong>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+     <!-- Begin page content -->
+
+   <main role="main" class="container">
+        {% block content %}
+            Default content
+        {% endblock %}
+    </main>
+
+    <footer class="text-muted">
+      <div class="container">
+        <p class="float-right">
+          <a href="#">Наверх</a>
+        </p>
+        <p>@Copyleft by Roman Maslov</p>
+      </div>
+    </footer>
 
 
-<h1>{%  block title %}All the tasks:{% endblock %}</h1>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static "bootstrap-4.1.1/assets/js/vendor/jquery.min.js" %}"></script>
+    <script src="{% static "bootstrap-4.1.1/assets/js/vendor/popper.min.js" %}"></script>
+    <script src="{% static "bootstrap-4.1.1/dist/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "comments.js" %}"></script>
+    <script src="http://harvesthq.github.io/chosen/chosen.jquery.js"></script>
+  </body>
+</html>
 
-<div>
-    {% block content %}{% endblock %}
-</div>
-
-<h1>Copyleft @RomanMaslov</h1>

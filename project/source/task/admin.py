@@ -10,4 +10,4 @@ class TaskAdmin (admin.ModelAdmin):
 
     list_display = 'name', 'auth'
     search_fields = 'name', 'auth__username'
-    list_filter = 'is_archieve',
+    list_filter = 'is_finished',

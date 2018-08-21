@@ -1,0 +1,23 @@
+{% load static %}
+
+<li class="media">
+    <div class="media-body">
+        <div class="media-heading">
+            <h6>{{ comment.author.username }}</h6>
+            <h6 class="text-muted">Добавлено: {{ comment.updated }}</h6>
+             <button type="button" class="btn btn-primary float-right commentadd" data-toggle="modal" data-target="#exampleModal" data-url="{% url 'task:comment_add' pk=comment.task.id parent_id=comment.id%}">
+                Ответить
+            </button>
+        </div>
+
+        <div class="media-text">{{ comment.text }}</div><hr>
+
+        {% if not comment.child_comments == null %}
+        <ul class="media-list">
+            {% for child in comment.child_comments.all %}
+                {% include "tasks/widjets/commentswid.html" with comment=child %}
+            {% endfor %}
+         </ul>
+        {% endif %}
+    </div>
+</li>

@@ -8,7 +8,7 @@ from .models import Category
 @admin.register(Category)
 class CategoryAdmin (admin.ModelAdmin):
 
-    list_display = 'name',
+    list_display = 'name', 'created', 'updated'
     search_fields = 'name',
 
 

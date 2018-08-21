@@ -1,11 +1,78 @@
 
 {% extends "core/base.html" %}
-
-
+{% load static %}
+{%  load crispy_forms_tags %}
+{% block title %} Категории - {{ block.super }} {% endblock %}
 {% block content %}
-    {% for category in categories %}
-        <a href="{% url "categories:category_detail" pk=category.id %} ">{{ category.name }}</a>
-        <br>
-    {% endfor %}
-    {{  username }}
+
+
+    <section class="jumbotron text-center">
+        <div class="container">
+          <h1 class="jumbotron-heading">Список Категорий</h1>
+          <p class="lead text-muted">Задания разбиты на категории, щелкай на категорию и перейдешь к списку заданий!</p>
+        </div>
+      </section>
+
+    <div class="row mb-2">
+        <div class="col">
+                <form action="" method = "get">
+                    <div class="form-row">
+                         <div class="col">
+                            {{ form.sort }}
+                        </div>
+                        <div class="col">
+                            {{ form.search }}
+                        </div>
+                        <div class="col">
+                            <input class="btn btn-secondary" type="submit" value="Поиск">
+                        </div>
+                    </div>
+                </form>
+        </div>
+        <div class="col">
+            <a class="btn btn-primary float-right" href="{% url "categories:category_create"%}">Создать новую</a>
+        </div>
+    </div>
+
+    <div class="row">
+         <div class="album py-5 bg-light">
+             <div class="container">
+                 <div class="row">
+                    {% for category in categories %}
+                        <div class="col-md-4">
+                              <div class="card mb-4 box-shadow">
+                                  {% if not category.image %}
+                                      <img class="card-img-top" height="220px" src= '{% static 'img/лого/огромная.jpg' %}' >
+                                  {% else %}
+                                      <img class="card-img-top" height="220px" src= '{{ category.image.url }}' >
+                                  {% endif %}
+
+                                <div class="card-body">
+                                    <div class="row justify-content-center">
+                                        <a class="card-link" href="{% url "categories:category_detail" pk=category.id %} "> {{ category.name }} </a>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <p class="card-text">{{ category.description }}</p>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                    <small class="text-muted"><a class="float-right" href = "{%  url "categories:category_edit" pk=category.id %}">Редактировать</a></small>
+                                  </div>
+                                </div>
+                              </div>
+                        </div>
+                    {% endfor %}
+
+                 </div>
+              </div>
+         </div>
+    </div>
+
 {%  endblock %}
+
+            <div class="col-md-12">
+                <div class ="card card-block bg-faded mt-2">
+
+
+                </div>
+            </div>
+

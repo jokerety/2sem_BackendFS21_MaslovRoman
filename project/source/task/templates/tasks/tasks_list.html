@@ -3,9 +3,17 @@
 
 
 {% block content %}
-    {% for task in tasks %}
-        <a href="{% url "task:task_detail" pk=task.id %} ">{{ task.name }}</a>
-        <br>
-    {% endfor %}
-    {{  username }}
+    <h3>Категории заданий</h3>
+    <div class="row">
+        {% for task in tasks %}
+            <div class="col-md-12">
+                <div class = "card">
+                    <div class="card-body">
+                    <a href="{% url "task:task_detail" pk=task.id %} ">{{ task.name }}</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {{  username }}
+    </div>
 {%  endblock %}

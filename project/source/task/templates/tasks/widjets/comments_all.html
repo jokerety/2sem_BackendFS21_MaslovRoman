@@ -1,0 +1,8 @@
+<ul class="media-list">
+    {% for comment in comments %}
+        {% include "tasks/widjets/commentswid.html" %}
+    {% empty %}
+        <div class="media-text">Комментариев пока нет</div>
+    {% endfor %}
+</ul>
+
