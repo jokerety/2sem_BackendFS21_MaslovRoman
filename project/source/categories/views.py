@@ -12,8 +12,12 @@ from crispy_forms.layout import Submit
 from django.db import models
 from django.core.cache import caches
 from likes.models import Like
-
+from django.http import JsonResponse
 cache = caches['default']
+from jsonrpc import jsonrpc_method
+import json
+from django.core.serializers import serialize
+from time import sleep
 
 
 class CategoryListForm(forms.Form):
@@ -38,6 +42,7 @@ class CategoryListForm(forms.Form):
         self.fields['search'].widget.attrs['class'] = 'form-control'
 
 
+@jsonrpc_method('categories.list')
 def categories_list(request):
 
     categories = Category.objects.all()
@@ -50,15 +55,14 @@ def categories_list(request):
                 categories = categories.order_by(data['sort'])
             if data['search']:
                 categories = categories.filter(name__icontains=data['search'])
-
         context = {
             'categories': categories,
             'form': form,
         }
-        return render(request, 'categories/categories_list.html', context)
+        return json.loads(serialize('json', categories))
 
     elif request.method == 'POST':
-        return HttpResponseRedirect(reverse_lazy("core:login"))
+        return JsonResponse({'goto': "core:login"})
 
 
 class CategoryForm(ModelForm):
@@ -79,9 +83,10 @@ class CategoryEdit(UpdateView):
     template_name = 'categories/category_edit.html'
 
     def get_queryset(self):
-        return Category.objects.all()
+        return json.loads(serialize('json',Category.objects.all()))
 
     def get_success_url(self):
+        #return JsonResponse({'goto': "categories:category_detail", "pk" : self.object.pk})
         return reverse('categories:category_detail', kwargs={'pk': self.object.pk})
 
 
@@ -97,7 +102,7 @@ class CategoryCreate(CreateView):
     def get_success_url(self):
         return reverse('categories:category_detail', kwargs={'pk': self.object.pk})
 
-
+@jsonrpc_method('category_detail')
 def category_detail(request, pk=None):
 
     category = get_object_or_404(Category, id=pk)
@@ -127,7 +132,7 @@ def category_detail(request, pk=None):
         'tasks': tasks,
         'form': form,
     }
-    return render(request, 'categories/category_detail.html', context)
+    return json.loads(serialize('json', context))
 
 
 class TaskListForm(forms.Form):
@@ -149,3 +154,12 @@ class TaskListForm(forms.Form):
         super(TaskListForm, self).__init__(*args, **kwargs)
         self.fields['sort'].widget.attrs['class'] = 'form-control'
         self.fields['search'].widget.attrs['class'] = 'form-control'
+
+
+def testfunc(request):
+    title = Category.objects.last().name
+    return JsonResponse({'category': title})
+
+def mock():
+    sleep(10)
+    return 200

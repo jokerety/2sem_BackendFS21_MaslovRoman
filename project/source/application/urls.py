@@ -26,7 +26,8 @@ from django.contrib.staticfiles.urls import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf import settings
 from django.conf.urls import include, url
-
+from jsonrpc import jsonrpc_site
+from api.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -37,7 +38,8 @@ urlpatterns = [
     url(r'^userman/', userman),
     url(r'^categories/',include ('categories.urls', namespace='categories')),
     url(r'^', include ('core.urls', namespace='core')),
-
+    url(r'^', include('social_django.urls')),
+    url (r'^api/', jsonrpc_site.dispatch)
 ]
 
 urlpatterns += staticfiles_urlpatterns()

@@ -74,3 +74,9 @@ class LogoutView(View):
         logout(request)
 
         return HttpResponseRedirect(reverse_lazy("core:login"))
+
+
+def home(request):
+    context = {}
+    template = 'core/home.html'
+    return render(request, template, context)

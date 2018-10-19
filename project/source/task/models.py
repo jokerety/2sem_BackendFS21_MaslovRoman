@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.conf import settings
 from categories.models import Category
-from core.models import User
+from core.models import User, UserFile
 # Create your models here.
 
 
@@ -35,8 +35,8 @@ class Task(models.Model):
     usertask = models.ManyToManyField(User, blank=True, related_name='users', verbose_name=u'Пользователи')
     is_published = models.BooleanField(default=True)
     viewcount = models.IntegerField(default=0)
-
     objects = TaskQuerySet.as_manager()
+    file = models.ManyToManyField(UserFile)
 
     class Meta:
         verbose_name = u'Задание'

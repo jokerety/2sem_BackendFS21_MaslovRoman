@@ -11,17 +11,22 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.views.generic import UpdateView,CreateView
 from django.db import models
+from jsonrpc import jsonrpc_method
+from jsonrpc.exceptions import Error
+from jsonrpc import jsonrpc_method
+import json
+from django.core.serializers import serialize
 
-
+@jsonrpc_method('task_list')
 def task_list(request):
 
     context = {
         'tasks': Task.objects.all()
     }
 
-    return render(request, 'tasks/tasks_list.html', context)
+    return json.loads(serialize('json', context))
 
-
+@jsonrpc_method('task_detail')
 def task_detail(request, pk=None):
     task = get_object_or_404(Task, id=pk)
     like_form = LikeForm()
@@ -67,7 +72,7 @@ def task_detail(request, pk=None):
         'comments': Comment.objects.all().filter(is_archieve=False, task=task).order_by('created')
     }
 
-    return render(request, 'tasks/tasks_detail.html', context)
+    return json.loads(serialize('json', context))
 
 
 class EditTaskForm(ModelForm):
@@ -130,7 +135,7 @@ class CommentForm(ModelForm):
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submit', 'Добавить комментарий'))
 
-
+@jsonrpc_method("task_comments")
 def task_comments(request, pk=None):
 
     task = get_object_or_404(Task, id=pk)
@@ -138,7 +143,7 @@ def task_comments(request, pk=None):
         'comments': task.task_comments.all().filter(is_archieve=False, comment=None).order_by('created')
     }
 
-    return render(request, 'tasks/widjets/comments_all.html', context)
+    return json.loads(serialize('json', context))
 
 
 class AddCommentForm(ModelForm):
@@ -152,7 +157,7 @@ class AddCommentForm(ModelForm):
         self.helper.form_tag = False
         self.helper.add_input(Submit('submit', 'Ответить'))
 
-
+@jsonrpc_method('count_likes')
 def count_likes(request, pk=None):
 
     task = get_object_or_404(Task, id=pk)
@@ -160,7 +165,7 @@ def count_likes(request, pk=None):
     context = {
         'likes': task.likes.filter(is_active=True)
     }
-    return render(request,'tasks/widjets/likes.html', context)
+    return json.loads(serialize('json', context))
 
 
 class LikeForm(ModelForm):
@@ -217,7 +222,7 @@ def like_add(request, pk=None):
 
     return HttpResponse("Failed")
 
-
+@jsonrpc_method('task_comment_add')
 def task_comment_add (request, pk=None, parent_id=None):
     task = get_object_or_404(Task, id=pk)
     parent = get_object_or_404(task.task_comments, id=parent_id)
@@ -234,7 +239,7 @@ def task_comment_add (request, pk=None, parent_id=None):
     context = {
         'comment_form': form,
     }
-    return render(request, 'tasks/widjets/comment_add.html', context)
+    return json.loads(serialize('json', context))
 
 
 
