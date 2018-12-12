@@ -7,7 +7,7 @@ if __name__ == "__main__":
         print("Usage: {} <file>".format(sys.argv[0]))
 
     file_name = sys.argv[1]
-    rpc_server = ServiceProxy('http://127.0.0.1:8000/api/')
+    rpc_server = ServiceProxy('http://localhost:8080/api/')
     with open(file_name, 'rb') as input_content:
         content = base64.b64encode(input_content.read())
         res = rpc_server.file_upload(file_name, content.decode('utf-8'))

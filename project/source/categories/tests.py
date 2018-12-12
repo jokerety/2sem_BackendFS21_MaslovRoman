@@ -33,7 +33,6 @@ class CategoriesTests(TestCase):
 
     def test_category_list (self):
         categories = CategoryFactory.build_batch(8, author=self.author)
-
         for category in categories:
             self.assertEqual(category.description, 'description')
             self.assertEqual(category.author.username, 'John')

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,JsonResponse
 from core.models import User
 from django.shortcuts import render,HttpResponse
 from django.views.generic.edit import FormView
@@ -10,6 +10,9 @@ from django.views.generic.base import View
 from django.urls import reverse_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
+from django.views.decorators.csrf import csrf_exempt
+import hashlib, json
+from django.contrib.auth import login as loginUser, logout as logoutUser
 
 class UserCreationForm(OldUserCreationForm):
     class Meta:
@@ -33,8 +36,6 @@ class RegisterFormView(FormView):
     success_url = reverse_lazy("core:login")
 
     template_name = "core/register.html"
-
-
 
     def form_valid(self, form):
 
@@ -63,11 +64,34 @@ class LoginFormView (FormView):
     success_url = reverse_lazy("categories:categories_list")
 
     def form_valid(self, form):
-
         self.user = form.get_user()
 
         login(self.request, self.user)
         return super (LoginFormView, self).form_valid(form)
+
+
+@csrf_exempt
+def login2(request):
+    if request.method == 'GET':
+        return HttpResponse('Use post')
+    elif request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        form = AuthenticationForm(data=data)
+        if form.is_valid():
+            user = form.get_user()
+            loginUser(request, user)
+            return JsonResponse({
+                'userId': user.pk,
+                'token': generate_key(user.get_username())
+            })
+        else:
+            return HttpResponse('Unauthorized', status=401)
+
+@csrf_exempt
+def logout(request):
+    logoutUser(request)
+    return JsonResponse({ 'status': 200 })
+
 
 class LogoutView(View):
     def get(self, request):
@@ -80,3 +104,8 @@ def home(request):
     context = {}
     template = 'core/home.html'
     return render(request, template, context)
+
+def generate_key(filename):
+    h = hashlib.new('md5')
+    h.update(filename.encode('utf-8'))
+    return h.hexdigest()

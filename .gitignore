@@ -1,2 +1,6 @@
-.idea/
 *.pyc
+.idea
+env/
+.mysqldata/
+ca-key.pem
+.db_data/

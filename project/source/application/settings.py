@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'debug_toolbar',
     'social_django',
+    'corsheaders',
 ]
 
 AUTH_USER_MODEL = 'core.User'
@@ -58,12 +59,14 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+CORS_ORIGIN_ALLOW_ALL = True
 
 INTERNAL_IPS = [
     '127.0.0.1',
@@ -90,6 +93,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'social_django.context_processors.backends',
+                'core.context_processors.main',
             ],
         },
     },
@@ -113,6 +117,7 @@ DATABASES = {
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.vk.VKOAuth2',
+    'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -158,7 +163,7 @@ USE_TZ = True
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+#MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = ('static', )
@@ -168,7 +173,7 @@ FIXTURE_DIRS = (
 )
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'django.core.files.storage.FileSystemStorage'
+#STATICFILES_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 AWS_S3_ENDPOINT_URL = "http://hb.bizmrg.com"
 AWS_ACCESS_KEY_ID = 'oupF5S8BAVPEeq3Bgx8SBR'
@@ -178,6 +183,18 @@ AWS_STORAGE_BUCKET_NAME = 'jokerety'
 
 SOCIAL_AUTH_VK_OAUTH2_KEY = '6723065'
 SOCIAL_AUTH_VK_OAUTH2_SECRET = 'o2noxhbLsMmRlPVhbyKT'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '668911897522-9fanv0uqm64reeebr3ncdblu10kei9v6.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'GhzQeZvtuqJeO5XcbrNicb_w'
+
 LOGIN_REDIRECT_URL = '/categories/'
-LOGIN_URL = '/home/'
+LOGIN_URL = '/login/'
 SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email']
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email']
+
+
+CENTRIFUGE_ADDRESS = 'http://localhost:9000'
+CENTRIFUGE_SECRET = 'bd90eb08-e145-40ee-a390-02d0146e9918'
+CENTRIFUGE_API_KEY = 'kk2l234h-92fj-pwfd-okp4-124g44b43d33'
+CENTRIFUGE_TIMEOUT = 10
+

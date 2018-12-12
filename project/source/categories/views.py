@@ -18,6 +18,7 @@ from jsonrpc import jsonrpc_method
 import json
 from django.core.serializers import serialize
 from time import sleep
+from django.views.decorators.csrf import csrf_exempt
 
 
 class CategoryListForm(forms.Form):
@@ -42,7 +43,6 @@ class CategoryListForm(forms.Form):
         self.fields['search'].widget.attrs['class'] = 'form-control'
 
 
-@jsonrpc_method('categories.list')
 def categories_list(request):
 
     categories = Category.objects.all()
@@ -59,10 +59,7 @@ def categories_list(request):
             'categories': categories,
             'form': form,
         }
-        return json.loads(serialize('json', categories))
-
-    elif request.method == 'POST':
-        return JsonResponse({'goto': "core:login"})
+        return render(request, 'categories/categories_list.html', context)
 
 
 class CategoryForm(ModelForm):
@@ -83,10 +80,9 @@ class CategoryEdit(UpdateView):
     template_name = 'categories/category_edit.html'
 
     def get_queryset(self):
-        return json.loads(serialize('json',Category.objects.all()))
+        return Category.objects.all()
 
     def get_success_url(self):
-        #return JsonResponse({'goto': "categories:category_detail", "pk" : self.object.pk})
         return reverse('categories:category_detail', kwargs={'pk': self.object.pk})
 
 
@@ -97,12 +93,15 @@ class CategoryCreate(CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        category = form.save()
+        publish_category(category)
         return super(CategoryCreate, self).form_valid(form)
 
     def get_success_url(self):
+
         return reverse('categories:category_detail', kwargs={'pk': self.object.pk})
 
-@jsonrpc_method('category_detail')
+
 def category_detail(request, pk=None):
 
     category = get_object_or_404(Category, id=pk)
@@ -132,7 +131,7 @@ def category_detail(request, pk=None):
         'tasks': tasks,
         'form': form,
     }
-    return json.loads(serialize('json', context))
+    return render(request, 'categories/category_detail.html', context)
 
 
 class TaskListForm(forms.Form):
@@ -163,3 +162,40 @@ def testfunc(request):
 def mock():
     sleep(10)
     return 200
+
+
+import requests
+from application.settings import CENTRIFUGE_API_KEY
+
+
+def publish_category(category):
+    command = {
+        "method": "publish",
+        "params": {
+            "channel": "public:screen-updates",
+                "data": {
+                    "category": serialize('json', [ category, ], )
+                }
+            }
+    }
+    api_key = CENTRIFUGE_API_KEY
+    data = json.dumps(command)
+    headers = {'Content-type': 'application/json', 'Authorization': 'apikey ' + api_key}
+    resp = requests.post("http://localhost:9000/api", data=data, headers=headers)
+    print(resp.json())
+
+
+@csrf_exempt
+def get_all_categories(request):
+    categories = Category.objects.all()
+
+    categories_json = []
+    for category in categories:
+        categories_json.append({
+            'id': category.id,
+            'name': category.name,
+            'description': category.description,
+            'tasks_id': [obj for obj in category.tasks.values_list('id', flat=True)],
+        })
+
+    return JsonResponse(categories_json, safe=False)

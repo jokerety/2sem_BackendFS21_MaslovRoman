@@ -18,10 +18,10 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from core.views import index
 from likes.views import likes
-from task.views import task_detail, task_list
+from task.views import task_detail, task_list, get_all_tasks
 from rating.views import rating
-from userman.views import userman
-from categories.views import  categories_list, category_detail
+from userman.views import get_all_users
+from categories.views import  categories_list, category_detail, get_all_categories
 from django.contrib.staticfiles.urls import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf import settings
@@ -34,8 +34,10 @@ urlpatterns = [
     url (r'^$', index),
     url (r'^likes/$', likes),
     url(r'^rating/$', rating),
-    url(r'^task/', include ('task.urls', namespace='task')),
-    url(r'^userman/', userman),
+    url(r'^task/', include('task.urls', namespace='task')),
+    url(r'^get_all_users/', get_all_users),
+    url(r'^get_all_categories/', get_all_categories),
+    url(r'^get_all_tasks/', get_all_tasks),
     url(r'^categories/',include ('categories.urls', namespace='categories')),
     url(r'^', include ('core.urls', namespace='core')),
     url(r'^', include('social_django.urls')),

@@ -1,0 +1,36 @@
+version: "2.2"
+
+services:
+  web-app:
+    depends_on: [ mysqldb ]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+    - .:/app
+    ports:
+    - "8000:8000"
+    environment:
+      - DB_NAME=project_db
+      - DB_HOST=mysqldb
+      - DB_USER=mysqluser
+      - DB_PASSWORD=2346785das
+
+  mysqldb:
+    image: mysql:latest
+    restart: always
+    volumes:
+    - .mysqldata:/var/lib/mysql
+    ports:
+    - 3307:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=2346785das
+      - MYSQL_DATABASE=project_db
+      - MYSQL_USER=mysqluser
+      - MYSQL_PASSWORD=2346785das
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
