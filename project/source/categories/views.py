@@ -93,8 +93,6 @@ class CategoryCreate(CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        category = form.save()
-        publish_category(category)
         return super(CategoryCreate, self).form_valid(form)
 
     def get_success_url(self):

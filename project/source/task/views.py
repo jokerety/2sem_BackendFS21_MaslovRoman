@@ -247,6 +247,7 @@ def get_all_tasks(request):
     for task in tasks:
         tasks_json.append({
             'id': task.id,
+            'auth_id': task.auth_id,
             'name': task.name,
             'description': task.prescription,
             'categories_id': [obj for obj in task.categories.values_list('id', flat=True)],

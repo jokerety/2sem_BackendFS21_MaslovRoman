@@ -27,7 +27,10 @@ SECRET_KEY = 's(i036-r_9svgk@-fc-3+zczrsl&&+-!1blyknp@3ne^vjsk_p'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'web-app',
+    '172.18.0.4',
+]
 
 
 # Application definition
@@ -66,6 +69,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+
 CORS_ORIGIN_ALLOW_ALL = True
 
 INTERNAL_IPS = [
@@ -105,13 +109,14 @@ WSGI_APPLICATION = 'application.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'BASA',
-        'USER': 'jokerety',
-        'PASSWORD': '2346785das',
-        'HOST': 'localhost',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
     }
 }
 
